@@ -19,6 +19,8 @@ public class ChatService {
         switch (update.getMessage().getText()) {
             case "/start":
                 return keyBoardService.createMainMenu(chatId);
+            case "/version":
+                return keyBoardService.createAppInfoMessage(chatId);
             default:
                 var response = new SendMessage();
                 response.setChatId(chatId.toString());
