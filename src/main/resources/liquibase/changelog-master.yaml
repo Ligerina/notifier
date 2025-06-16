@@ -1,3 +1,5 @@
 databaseChangeLog:
   - include:
       file: liquibase/schema/create_default_schema.yaml
+  - include:
+      file: liquibase/1_triggers/changelog.yaml

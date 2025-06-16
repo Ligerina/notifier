@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-triggers-table
+      author: Anton
+      changes:
+        - sqlFile:
+            path: liquibase/1_triggers/sql/create_triggers.sql

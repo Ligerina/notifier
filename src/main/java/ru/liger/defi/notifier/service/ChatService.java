@@ -12,6 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 public class ChatService {
 
     private final KeyBoardService keyBoardService;
+    private final DatabaseInfoService databaseInfoService;
 
     public SendMessage handleMessage(Update update) {
         var chatId = update.getMessage().getChatId();
@@ -21,6 +22,8 @@ public class ChatService {
                 return keyBoardService.createMainMenu(chatId);
             case "/version":
                 return keyBoardService.createAppInfoMessage(chatId);
+            case "/db_data":
+                return databaseInfoService.getTableNames(chatId);
             default:
                 var response = new SendMessage();
                 response.setChatId(chatId.toString());
