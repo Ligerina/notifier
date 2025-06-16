@@ -31,12 +31,16 @@ public class KeyBoardService {
 
         // Создаем две кнопки — каждая в отдельной строке (каждая в своём List)
         InlineKeyboardButton viewTriggersButton = new InlineKeyboardButton();
-        viewTriggersButton.setText("Посмотреть список активных тригеров");
+        viewTriggersButton.setText("Список активных тригеров");
         viewTriggersButton.setCallbackData("VIEW_TRIGGERS");
 
         InlineKeyboardButton addTriggerButton = new InlineKeyboardButton();
         addTriggerButton.setText("Добавить тригер");
         addTriggerButton.setCallbackData("ADD_TRIGGER");
+
+        InlineKeyboardButton showPrices = new InlineKeyboardButton();
+        showPrices.setText("Цены валют");
+        showPrices.setCallbackData("SHOW_PRICES");
 
         // Каждая кнопка — отдельная строка (отдельный список)
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
@@ -47,8 +51,12 @@ public class KeyBoardService {
         List<InlineKeyboardButton> row2 = new ArrayList<>();
         row2.add(addTriggerButton);
 
+        List<InlineKeyboardButton> row3 = new ArrayList<>();
+        row3.add(showPrices);
+
         rows.add(row1);
         rows.add(row2);
+        rows.add(row3);
 
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         keyboardMarkup.setKeyboard(rows);
