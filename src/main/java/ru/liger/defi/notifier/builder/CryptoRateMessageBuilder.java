@@ -17,7 +17,6 @@ public class CryptoRateMessageBuilder {
     public SendMessage buildMessage(Long chatId) {
         Map<String, BigDecimal> rates = rateService.getRates();
 
-
         String text = """
                 📊 Актуальные курсы:
                 BTC: $%.2f

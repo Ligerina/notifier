@@ -1,4 +1,4 @@
-package ru.liger.defi.notifier.service;
+package ru.liger.defi.notifier.facade;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,9 +10,11 @@ import ru.liger.defi.notifier.builder.CryptoRateMessageBuilder;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class CommandService {
+public class CommandFacade {
 
     private final CryptoRateMessageBuilder cryptoRateMessageBuilder;
+    private final TriggerFacade triggerFacade;
+
 
     public SendMessage handleMessage(Update update) {
         String callbackData = update.getCallbackQuery().getData();
@@ -20,7 +22,8 @@ public class CommandService {
 
         return switch (callbackData) {
             case "SHOW_PRICES" -> cryptoRateMessageBuilder.buildMessage(chatId);
-            // можно добавлять ещё callback'и тут
+            case "ADD_TRIGGER" -> triggerFacade.startTriggerCreation(chatId, callbackData);
+            case "VIEW_TRIGGERS" -> triggerFacade.getAllTriggersByChatId(chatId);
             default -> {
                 SendMessage message = new SendMessage();
                 message.setChatId(chatId.toString());

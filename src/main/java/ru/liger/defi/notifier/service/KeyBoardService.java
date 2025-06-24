@@ -116,6 +116,24 @@ public class KeyBoardService {
         return message;
     }
 
+    public SendMessage createWelcomeMessageWithKeyboard(Long chatId, String text) {
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId.toString());
+        message.setText(text);
+
+        KeyboardRow row = new KeyboardRow();
+        row.add("/menu");
+        row.add("/version");
+        row.add("/db_data");
+
+        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
+        keyboard.setResizeKeyboard(true);
+        keyboard.setKeyboard(List.of(row));
+
+        message.setReplyMarkup(keyboard);
+        return message;
+    }
+
     private static String formatDuration(Duration d) {
         long hours = d.toHours();
         long minutes = d.toMinutesPart();
