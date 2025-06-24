@@ -1,4 +1,4 @@
-package ru.liger.defi.notifier.facade;
+package ru.liger.defi.notifier.entrypoint;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,28 +9,28 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.liger.defi.notifier.config.BotConfig;
-import ru.liger.defi.notifier.service.ChatService;
-import ru.liger.defi.notifier.service.CommandService;
+import ru.liger.defi.notifier.facade.ChatFacade;
+import ru.liger.defi.notifier.facade.CommandFacade;
 
 @Slf4j
 @Service
 @AllArgsConstructor
-public class TelegramBotFacade extends TelegramLongPollingBot {
+public class TelegramBotEntryPoint extends TelegramLongPollingBot {
 
     private final BotConfig botConfig;
-    private final ChatService chatService;
-    private final CommandService commandService;
+    private final ChatFacade chatFacade;
+    private final CommandFacade commandFacade;
 
     @Override
     public void onUpdateReceived(Update update) {
         log.info("update received - {}", update);
         if (update.hasMessage() && update.getMessage().hasText()) {
-            var response =  chatService.handleMessage(update);
+            var response =  chatFacade.handleMessage(update);
             sendMessage(response);
         }
 
         if (update.hasCallbackQuery()) {
-            var response =  commandService.handleMessage(update);
+            var response =  commandFacade.handleMessage(update);
             sendMessage(response);
             handleCallback(update);
         }
@@ -56,14 +56,11 @@ public class TelegramBotFacade extends TelegramLongPollingBot {
     }
 
     private void handleCallback(Update update){
-        String callbackData = update.getCallbackQuery().getData();
-        Long chatId = update.getCallbackQuery().getMessage().getChatId();
         String callbackId = update.getCallbackQuery().getId();
 
-        // отправляем ответ, чтобы убрать подсветку кнопки
         AnswerCallbackQuery answer = new AnswerCallbackQuery();
         answer.setCallbackQueryId(callbackId);
-        answer.setShowAlert(false); // true — если хочешь всплывающее окно
+        answer.setShowAlert(false);
 
         try {
             execute(answer);

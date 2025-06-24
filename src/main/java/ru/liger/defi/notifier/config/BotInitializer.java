@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-import ru.liger.defi.notifier.facade.TelegramBotFacade;
+import ru.liger.defi.notifier.entrypoint.TelegramBotEntryPoint;
 
 @Component
 @AllArgsConstructor
 @Slf4j
 public class BotInitializer {
-    private final TelegramBotFacade telegramBotFacade;
+    private final TelegramBotEntryPoint telegramBotFacade;
 
     @EventListener({ContextRefreshedEvent.class})
     public void init() throws TelegramApiException {
