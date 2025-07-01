@@ -9,6 +9,7 @@ import ru.liger.defi.notifier.model.TriggerDto;
 import ru.liger.defi.notifier.repository.TriggerRepository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -19,7 +20,7 @@ public class TriggerService {
     private final TriggerRepository triggerRepository;
     @Transactional(readOnly = true)
     public List<TriggerDto> getAllTriggers(Long chatId) {
-        return triggerRepository.getTriggersByChatId(chatId)
+        return triggerRepository.getTriggersByChatIdAndDeletedIsFalse(chatId)
                 .stream().map(triggerMapper::toDto)
                 .toList();
     }
@@ -28,5 +29,11 @@ public class TriggerService {
     public void saveTrigger(Long chatId, TriggerDto dto) {
         var trigger = triggerMapper.toEntity(dto, chatId);
         triggerRepository.save(trigger);
+    }
+
+    @Transactional
+    public void deleteTriggerById(UUID triggerId) {
+        var trigger = triggerRepository.getTriggerById(triggerId);
+        trigger.setDeleted(true);
     }
 }

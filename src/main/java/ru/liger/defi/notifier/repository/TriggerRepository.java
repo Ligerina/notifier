@@ -8,6 +8,8 @@ import java.util.UUID;
 
 public interface TriggerRepository extends JpaRepository<Trigger, UUID> {
 
-    List<Trigger> getTriggersByChatId(Long chatId);
+    List<Trigger> getTriggersByChatIdAndDeletedIsFalse(Long chatId);
+
+    Trigger getTriggerById(UUID id);
 
 }
