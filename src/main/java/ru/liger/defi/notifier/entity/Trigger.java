@@ -37,6 +37,9 @@ public class Trigger {
     @Column(name = "created_at", nullable = false, columnDefinition = "timestamp default CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
+    @Column(name = "deleted")
+    private Boolean deleted = Boolean.FALSE;
+
     @PrePersist
     public void prePersist() {
         if (createdAt == null) {

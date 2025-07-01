@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-add-delete-column
+      author: Anton
+      changes:
+        - sqlFile:
+            path: liquibase/2_update_trigger_table/sql/add_delete_column.sql

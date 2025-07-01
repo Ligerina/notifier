@@ -4,12 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import ru.liger.defi.notifier.model.PositionStep;
 import ru.liger.defi.notifier.model.TriggerDto;
 import ru.liger.defi.notifier.service.TriggerService;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -96,6 +101,7 @@ public class TriggerFacade {
         var triggers = triggerService.getAllTriggers(chatId);
 
         String text;
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
 
         if (triggers.isEmpty()) {
             text = "📭 У вас пока нет активных триггеров.";
@@ -104,11 +110,19 @@ public class TriggerFacade {
 
             int index = 1;
             for (TriggerDto trigger : triggers) {
-                sb.append(index++).append(". ")
+                sb.append(index).append(". ")
                         .append("*").append(trigger.getPositionName()).append("* — ")
                         .append(trigger.getAssetName()).append("\n")
                         .append("🔼 Верхняя граница: ").append(trigger.getUpperBound()).append("\n")
-                        .append("🔽 Нижняя граница: ").append(trigger.getLowerBound()).append("\n");
+                        .append("🔽 Нижняя граница: ").append(trigger.getLowerBound()).append("\n\n");
+
+                // 🗑 Кнопка "Удалить"
+                InlineKeyboardButton deleteButton = new InlineKeyboardButton();
+                deleteButton.setText("🗑 Удалить " + index);
+                deleteButton.setCallbackData("DELETE_TRIGGER_" + trigger.getId());
+
+                keyboard.add(List.of(deleteButton));
+                index++;
             }
 
             text = sb.toString();
@@ -119,7 +133,17 @@ public class TriggerFacade {
         message.setText(text);
         message.setParseMode("Markdown");
 
+        if (!keyboard.isEmpty()) {
+            InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+            markup.setKeyboard(keyboard);
+            message.setReplyMarkup(markup);
+        }
+
         return message;
     }
 
+
+    public void deleteTriggerById(UUID triggerId) {
+        triggerService.deleteTriggerById(triggerId);
+    }
 }

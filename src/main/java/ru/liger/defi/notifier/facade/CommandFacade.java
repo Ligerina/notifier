@@ -7,6 +7,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.liger.defi.notifier.builder.CryptoRateMessageBuilder;
 
+import java.util.UUID;
+
 @Slf4j
 @Service
 @AllArgsConstructor
@@ -19,6 +21,19 @@ public class CommandFacade {
     public SendMessage handleMessage(Update update) {
         String callbackData = update.getCallbackQuery().getData();
         Long chatId = update.getCallbackQuery().getMessage().getChatId();
+
+        // 🔍 Обработка удаления триггера по callbackData
+        if (callbackData.startsWith("DELETE_TRIGGER_")) {
+            String idStr = callbackData.replace("DELETE_TRIGGER_", "");
+            var triggerId = UUID.fromString(idStr);
+
+            triggerFacade.deleteTriggerById(triggerId);
+
+            SendMessage message = new SendMessage();
+            message.setChatId(chatId.toString());
+            message.setText("✅ Триггер успешно удалён.");
+            return message;
+        }
 
         return switch (callbackData) {
             case "SHOW_PRICES" -> cryptoRateMessageBuilder.buildMessage(chatId);
